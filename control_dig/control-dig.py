@@ -6,9 +6,14 @@
 
 import serial
 import threading
-
-from timeit import default_timer
 import time
+
+# para mostrar nombres descriptivos en lugar de los nombres de los pines
+nombres={"DCD": "Puerta", "RI":"Ventana", "DSR":"Activado", "CTS":"Movimiento", "RTS":"Llamada", "DTR": "Sirena"}
+
+#a ingresar por consola o configuración
+puerto = '/dev/ttyUSB0'
+t_scan = 0.5
 
 def is_set( a, mascara):
     """devuelve como string el estado del bit especificado por <mascara>"""
@@ -32,7 +37,19 @@ def get_fmt_inp_status(n):
 def get_fmt_out_status(n):
     """devuelve un string con el estado de las salidas"""
     return "DTR-> " + is_set(n, 0x02) + " RTS-> " + is_set(n, 0x01)
-    
+
+def get_fmt_status(p):
+    # obtiene estado de entradas y salidas
+    entradas = get_inp_status(p)
+    salidas = get_out_status(p)
+    # muestra estado por consola 
+    return  get_fmt_inp_status(entradas) + "   " + get_fmt_out_status(salidas)
+     
+def reemplazar_nombres(s, nombres): 
+    for n in nombres:
+        s = s.replace(n, nombres[n])
+    return s 
+ 
 class RepeatEvery(threading.Thread):
     """permite repetir una función cada un tiempo determinado"""
     def __init__(self, interval, func, *args, **kwargs):
@@ -49,34 +66,21 @@ class RepeatEvery(threading.Thread):
     def stop(self):
         self.runable = False
 
-def get_fmt_status(p):
-    # obtiene estado de entradas y salidas
-    entradas = get_inp_status(p)
-    salidas = get_out_status(p)
-    # muestra estado por consola 
-    print get_fmt_inp_status(entradas), get_fmt_out_status(salidas)
 
 def timeout_scan( s ):    
     """se ejecuta cada t_scan"""
-    get_fmt_status(s)
+    print reemplazar_nombres(get_fmt_status(s), nombres)
     
 def main():
-    #a ingresar por consola o configuración
-    puerto = '/dev/ttyUSB0'
-    t_scan = 5
-   
     #crea instancia de Serial 
     ser = serial.Serial(puerto) 
     #abre puerto
     ser = serial.Serial('/dev/ttyUSB0', timeout=1)  
-
-    # tiempo inicial para calcular el tiempo de scan
-    t0 = default_timer()
     
-    # inicia timer (thread) para obtener estado, procesar script, log etc.
+    # inicia timer (thread) para obtener estasetdo, procesar script, log etc.
     th = RepeatEvery(t_scan, timeout_scan, ser)
     th.start()
-    
+
     while True:
 	cmd = ""
 	cmd = raw_input().lower()
@@ -101,7 +105,7 @@ def main():
 	    print "reset RTS"
 	    ser.rts = False
 	elif cmd == "s":
-	    get_fmt_status(ser)
+	    print reemplazar_nombres(get_fmt_status(ser), nombres)
 	elif cmd == "x":
 	    print "deteniendo y saliendo..."
 	    th.stop()
