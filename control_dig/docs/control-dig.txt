@@ -1,0 +1,80 @@
+control digital 
+usando lineas de handshaking del port serie
+=======================================================================
+
+v.0.1.a
+=======================================================================
+
+uso:
+
+Luego de iniciar el programa, se comienza a mostrar el estado de las 
+entradas (CD, RI, DSR, CTS) y las salidas (DTR, RTS)
+
+Introduciendo comandos y presionando <enter> se puede modificar el 
+comportamiento en forma interactiva.
+
+Los comandos interactivos disponibles:
+
+d - se detiene el refresco periódico del estado de e / s
+r - reinicia el refresco periódico del estado de e / s
+s - muestra el estado de las e / s
+sr - set RTS
+rr - reset RTS
+sd - set DTR
+rd - reset DTR
+x - finaliza el programa
+
+
+
+TODO:
+
+Se le pueden pasar como parámetros:
+
+tscan=s.s - tiempo de scan - cada cuántos segundos actualiza el estado
+	de las e/s
+
+quiet - no muestra estado por pantalla cuando está en modo automático
+
+port=nombre - nombre del port serie a utilizar
+
+dtr=1 o sd 
+dtr=0 o rd
+rts=1 o sr
+rts=0 o rr - estado inicial de las salidas rts y dtr
+
+fs=<nombre de archivo de script> - script para modo automático
+
+fl=<nombre de archivo de log> 
+
+config=<nombre archivo configuración>
+
+estructura del archivo de confguración:
+
+port="ttyUSB0"
+tscan=1.5
+nombres="DCD": "Puerta", "RI":"Ventana", "DSR":"Activado", "CTS":"Movimiento", "RTS":"Llamada", "DTR": "Sirena"
+dtr=0
+rts=1
+fs=~/Documents/prueba.ass
+autostart=1
+
+estructura del archivo de script:
+
+
+formato de log y pantalla
+
+F - fecha
+H - hora
+N - nombre
+P - pin nro.
+R - nombre real
+E - estado 
+
+Ej.
+        entradas     salidas
+F - H - P N <- E *** P N -> E   
+
+Produce:
+
+2016-01-25 - 17:58 - 1 Puerta <- 1  9 Ventana <- 0  6 Activado <- 1  8 Movimiento <- 1 *** 4 Sirena -> 1  7 Llamada -> 0
+
