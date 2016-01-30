@@ -1,11 +1,31 @@
 control digital 
 usando lineas de handshaking del port serie
 =======================================================================
-
-v.0.1.a
+v.0.2 (alfa)
 =======================================================================
 
+requiere pyserial 3.0.1+
+
+Testeado (-)/ a testear (?) en:
+
+ASus K53E i3* con:
+ - mint 17.2 kde 
+ - win 7 Home - 64b
+
+Netbook LG110* atom N270 con:
+ ? win xp 32b home
+
+Netbook Asus1005HA* atom N270 con:
+ ? debian 8.2 32b
+
+Sempron 2200+ Mother M7VIG400 (serie on board y *) con:
+ ? win xp pro 32b
+
+*con adaptador usb-232 HXSP-2108D (con CI CP2108)
+
+=======================================================================
 uso:
+=======================================================================
 
 Luego de iniciar el programa, se comienza a mostrar el estado de las 
 entradas (CD, RI, DSR, CTS) y las salidas (DTR, RTS)
@@ -25,7 +45,52 @@ rd - reset DTR
 x - finaliza el programa
 
 
+=======================================================================
+documentación y ejemplos
+=======================================================================
 
+En la carpeta docs se proporcionan circuitos, ideas y ejemplos de uso, 
+además de documentación sobre el puerto serie: el hardware y cómo 
+usarlo desde linux.
+
+
+=======================================================================
+historial de versiones
+=======================================================================
+
+0.2 - 2016-01-29 -
+    Agregado: Modo automático - procesa scripts (ver detalle abajo)
+
+0.1 - 2016-01-28 - 
+    Versión inicial de prueba y desarrollo
+    En línea de comandos. 
+    Solo modo manual 
+    No procesa argumentos
+    tscan, port, nombres, formatos: hardcoded
+    En modo interactivo soporta: d, r, s, x, sr, rr, sd, rd
+
+
+=======================================================================
+estructura de archivos de scripts
+=======================================================================
+
+# estado nro. 0 (inicial) 
+# salidas: DTR: 1 RTS: 0 
+# Si CD = 1, RI = 0, DSR = 1, CTS = 0 => va a estado 3
+# Si CD = 1, RI = 0, DSR = 1, CTS = 1 => va a estado 2
+# Cualquier otra combinación: permanece en estado 0 
+000,10,1010:003,1011:002
+
+# estado nro. 2  
+# salidas: DTR: 0 RTS: 1 
+# Si CD = 0, RI = 0, DSR = 0, CTS = 1 => va a estado 0
+# Si CD = 1, RI = 0, DSR = 0, CTS = 0 => va a estado 3
+# Cualquier otra combinación: permanece en estado 2 
+002,01,0001:0,1000:003
+
+
+
+-----------------------------------------------------------------------
 TODO:
 
 Se le pueden pasar como parámetros:
@@ -57,8 +122,6 @@ dtr=0
 rts=1
 fs=~/Documents/prueba.ass
 autostart=1
-
-estructura del archivo de script:
 
 
 formato de log y pantalla
