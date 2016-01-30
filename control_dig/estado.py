@@ -53,8 +53,6 @@ def carga_estados(lista, nombrearchivo):
             
         lista[e.numero] = e
     f.close()
- 
-    
    
 #e1 = Estado(1,"10")
 #e2 = Estado(2,"01")

@@ -27,27 +27,27 @@ class tick_timer():
             self.timer.cancel()
             self.contando = 1
 
-def proceso(a, b):
-        print a * b
+#def proceso(a, b):
+        #print a * b
 
-def otro(x, y, z):
-        print "otro->", x+y+z
+#def otro(x, y, z):
+        #print "otro->", x+y+z
 
 
-if __name__ == '__main__':
-    a = 95
-    c = 2.36
+#if __name__ == '__main__':
+    #a = 95
+    #c = 2.36
     
-    x=tick_timer(0.5,proceso, [a, c])
-    x.start()
+    #x=tick_timer(0.5,proceso, [a, c])
+    #x.start()
      
-    x2=tick_timer(3,otro, [5, 2, c])
-    x2.start() 
+    #x2=tick_timer(3,otro, [5, 2, c])
+    #x2.start() 
     
-    a = ''
-    while a != 'x':
-        a = raw_input('>')
-        print "-------", a
+    #a = ''
+    #while a != 'x':
+        #a = raw_input('>')
+        #print "-------", a
         
-    x.stop()
-    x2.stop()
+    #x.stop()
+    #x2.stop()

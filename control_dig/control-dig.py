@@ -5,9 +5,10 @@
 # en forma manual o de acuerdo a un script
 
 import serial
-import threading
+#import threading
 import time
 
+import timer
 import estado
 import configuracion
 
@@ -55,22 +56,6 @@ def reemplazar_nombres(s, nombres):
         s = s.replace(n, nombres[n])
     return s 
  
-class RepeatEvery(threading.Thread):
-    """permite repetir una función cada un tiempo determinado"""
-    def __init__(self, interval, func, *args, **kwargs):
-        threading.Thread.__init__(self)
-        self.interval = interval  # seconds between calls
-        self.func = func          # function to call
-        self.args = args          # optional positional argument(s) for call
-        self.kwargs = kwargs      # optional keyword argument(s) for call
-        self.runable = True
-    def run(self):
-        while self.runable:
-            self.func(*self.args, **self.kwargs)
-            time.sleep(self.interval)
-    def stop(self):
-        self.runable = False
-
 def carga_estados(lista, nombrearchivo):
     f = open(nombrearchivo, 'r')
     for line in f:
@@ -86,9 +71,9 @@ def carga_estados(lista, nombrearchivo):
         lista[e.numero] = e
     f.close()
 
-def timeout_scan( s ):    
+def timeout_scan( s, estados, c ):    
     """se ejecuta cada t_scan"""
-    global estados, estado_actual, c_actual
+    global estado_actual
     
     ent = get_inp_status(s)
         
@@ -104,15 +89,14 @@ def timeout_scan( s ):
     
     print estado_actual, reemplazar_nombres(get_fmt_status(s), c.nombres) 
 
-c = configuracion.Configuracion("prueba.cfg")
-estados = {}  
-
 def main():
+    global estado_actual
     
-    #c = configuracion.Configuracion("prueba.cfg")
+    estados = {}  
+    
+    c = configuracion.Configuracion("prueba.cfg")
     c.cargar_configuracion()  
-    
-    #estado_actual = 0
+   
     try:
         #crea instancia de Serial y abre puerto
         ser = serial.Serial(c.puerto, timeout=1) 
@@ -129,12 +113,14 @@ def main():
         salidas = estados[c.estado_inicial].salidas      
         ser.dtr = estados[c.estado_inicial].dtr
         ser.rts = estados[c.estado_inicial].rts
+        estado_actual = c.estado_inicial
     except KeyError:
         print "no se especificó un estado inicial"
+        estado_actual = 0
 
     # inicia timer (thread) para obtener estasetdo, procesar script, log etc.
-    th = RepeatEvery(c.t_scan, timeout_scan, ser)
-    th.start()
+    tim = timer.tick_timer(c.t_scan, timeout_scan, [ser, estados, c])
+    tim.start()
 
     while True:
         cmd = ""
@@ -142,11 +128,12 @@ def main():
 
         if cmd == "d":
             print "deteniendo..."
-            th.stop()
+            tim.stop()
         elif cmd == "r":
             print "reiniciando..."
-            th = RepeatEvery(c.t_scan, timeout_scan, ser)
-            th.start()
+            tim = timer.tick_timer(c.t_scan, timeout_scan, [ser, estados, c])
+            tim.start()
+
         elif cmd == "sd":
             print "set DTR"
             ser.dtr = True
@@ -163,7 +150,7 @@ def main():
             print reemplazar_nombres(get_fmt_status(ser), c.nombres)
         elif cmd == "x":
             print "deteniendo y saliendo..."
-            th.stop()
+            tim.stop()
             break
 
 if __name__ == '__main__':
