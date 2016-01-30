@@ -16,6 +16,7 @@ class tick_timer():
         self.contando = 0
         self.funcion(*self.argumentos)
         self.timer = Timer(self.intervalo,self.timeout)
+        self.timer.daemon = True
         self.timer.start()
         self.contando = 1
         
