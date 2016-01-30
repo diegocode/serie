@@ -5,12 +5,12 @@
 # en forma manual o de acuerdo a un script
 
 import serial
-#import threading
 import time
 
 import timer
 import estado
 import configuracion
+import registro
 
 # para mostrar nombres descriptivos en lugar de los nombres de los pines
 #nombres={"DCD": "Puerta", "RI":"Ventana", "DSR":"Activado", "CTS":"Movimiento", "RTS":"Llamada", "DTR": "Sirena"}
@@ -71,7 +71,7 @@ def carga_estados(lista, nombrearchivo):
         lista[e.numero] = e
     f.close()
 
-def timeout_scan( s, estados, c ):    
+def timeout_scan( s, estados, c, log ):    
     """se ejecuta cada t_scan"""
     global estado_actual
     
@@ -87,7 +87,12 @@ def timeout_scan( s, estados, c ):
         s.rts = estados[e].rts
         s.dtr = estados[e].dtr
     
-    print estado_actual, reemplazar_nombres(get_fmt_status(s), c.nombres) 
+    datos = str(estado_actual) + " - " + reemplazar_nombres(get_fmt_status(s), c.nombres) 
+    print datos
+    
+    if c.archivo_registro != "":
+        log.guardar_linea([datos,])
+
 
 def main():
     global estado_actual
@@ -117,9 +122,14 @@ def main():
     except KeyError:
         print "no se especificó un estado inicial"
         estado_actual = 0
-
+        
+    if c.archivo_registro != "":
+        log = registro.Registrador(c)
+    else:
+        log = None
+        
     # inicia timer (thread) para obtener estasetdo, procesar script, log etc.
-    tim = timer.tick_timer(c.t_scan, timeout_scan, [ser, estados, c])
+    tim = timer.tick_timer(c.t_scan, timeout_scan, [ser, estados, c, log])
     tim.start()
 
     while True:
@@ -131,7 +141,7 @@ def main():
             tim.stop()
         elif cmd == "r":
             print "reiniciando..."
-            tim = timer.tick_timer(c.t_scan, timeout_scan, [ser, estados, c])
+            tim = timer.tick_timer(c.t_scan, timeout_scan, [ser, estados, c, log])
             tim.start()
 
         elif cmd == "sd":
@@ -154,6 +164,9 @@ def main():
             break
 
 if __name__ == '__main__':
-    main()
-
+    try:
+        main()
+    except KeyboardInterrupt:
+        print "deteniendo y saliendo..."
+        pass
 

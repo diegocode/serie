@@ -10,6 +10,11 @@ class Configuracion:
         self.t_scan = 2
         self.archivo_estados = "prueba.scd"
         self.archivo_configuracion = f
+        self.archivo_registro = ""
+        self.reg_solo_cambios = "1"
+        self.reg_fecha = "0"
+        self.reg_hora = "0"
+        self.reg_separador = ","
         self.estado_inicial = 0
         self.nombres = {"DCD": "DCD", "RI":"RI", "DSR":"DSR", "CTS":"CTS", "RTS":"RTS", "DTR": "DTR"}
        
@@ -24,8 +29,18 @@ class Configuracion:
                 self.puerto = val
             elif arg == "tscan":
                 self.t_scan = float(val)
+            elif arg == "archivo_registro":
+                self.archivo_registro = val
             elif arg == "archivo_estados":
                 self.archivo_estados = val
+            elif arg == "registro_solo_cambios":
+                self.reg_solo_cambios = val
+            elif arg == "registro_fecha":
+                self.reg_fecha = val
+            elif arg == "registro_hora":
+                self.reg_hora = val        
+            elif arg == "registro_separador":
+                self.reg_separador = val                    
             elif arg == "estado_inicial":
                 self.estado_inicial = int(val)
                 #print "***"
