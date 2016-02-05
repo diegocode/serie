@@ -1,7 +1,7 @@
 control digital 
 usando lineas de handshaking del port serie
 =======================================================================
-v.0.2 (alfa)
+v.0.3 (alfa)
 =======================================================================
 
 requiere pyserial 3.0.1+
@@ -58,8 +58,18 @@ usarlo desde linux.
 historial de versiones
 =======================================================================
 
+0.3 - 2016-01-30 -
+    Agregado: 
+        Registro de eventos
+        Archivo de configuración (ver detalle abajo)
+    
+    Corregido:
+        Manejo correcto de Ctrl+C
+        
+
 0.2 - 2016-01-29 -
-    Agregado: Modo automático - procesa scripts (ver detalle abajo)
+    Agregado: 
+        Modo automático - procesa scripts (ver detalle abajo)
 
 0.1 - 2016-01-28 - 
     Versión inicial de prueba y desarrollo
@@ -73,6 +83,8 @@ historial de versiones
 =======================================================================
 estructura de archivos de scripts
 =======================================================================
+
+Aun no se permiten comentarios.
 
 # estado nro. 0 (inicial) 
 # salidas: DTR: 1 RTS: 0 
@@ -88,6 +100,35 @@ estructura de archivos de scripts
 # Cualquier otra combinación: permanece en estado 2 
 002,01,0001:0,1000:003
 
+=======================================================================
+estructura de archivos de configuración
+=======================================================================
+
+Aun no se permiten comentarios.
+El siguiente es un ejemplo válido y probado
+
+tscan = 2
+puerto = /dev/ttyUSB0
+archivo_estados = prueba.scd
+estado_inicial = 002
+archivo_registro=eventos.log
+registro_solo_cambios=1
+registro_fecha=1
+registro_hora=0
+registro_separador=;
+
+
+tscan= cada cuánto tiempo refresca la información de entadas y estados 
+puerto= el port serie a utilizar
+archivo_estados= nombre del archivo de script
+estado_inicial= cuál de los estados cargados se toma como inicial
+archivo_registro= nombre del archivo de registro de eventos
+registro_solo_cambios= solo se guarda en el archivo de registro de eventos
+                       una línea si hubo algún cambio en entradas y salidas
+registro_fecha=, registro_hora= si se incluye o no en cada línea del archivo
+                                de eventos la fecha y/o hora 
+registro_separador= caracter utilizado para separar los campos del archivo
+                    de registro de eventos
 
 
 -----------------------------------------------------------------------
@@ -112,32 +153,3 @@ fs=<nombre de archivo de script> - script para modo automático
 fl=<nombre de archivo de log> 
 
 config=<nombre archivo configuración>
-
-estructura del archivo de confguración:
-
-port="ttyUSB0"
-tscan=1.5
-nombres="DCD": "Puerta", "RI":"Ventana", "DSR":"Activado", "CTS":"Movimiento", "RTS":"Llamada", "DTR": "Sirena"
-dtr=0
-rts=1
-fs=~/Documents/prueba.ass
-autostart=1
-
-
-formato de log y pantalla
-
-F - fecha
-H - hora
-N - nombre
-P - pin nro.
-R - nombre real
-E - estado 
-
-Ej.
-        entradas     salidas
-F - H - P N <- E *** P N -> E   
-
-Produce:
-
-2016-01-25 - 17:58 - 1 Puerta <- 1  9 Ventana <- 0  6 Activado <- 1  8 Movimiento <- 1 *** 4 Sirena -> 1  7 Llamada -> 0
-

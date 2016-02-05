@@ -1,0 +1,49 @@
+            #header {                
+                height: 100px;
+                border: 2px solid #735A6C;
+		border-radius:5px;
+                background-color: #eeeeee;
+		padding-left: 50px;
+            }
+
+            #todo {
+                width: 100%;
+            }
+
+            #temp, #titulo, #seg {
+
+                font-family: sans-serif;
+                font-size: 24px;
+                font-weight: bolder;
+                color: #003333;
+                padding: 10px;
+                //border: solid 1px #006633;
+            }
+
+            #temp {
+                float: left;
+            }
+
+            #seg {
+                color: #0033ff;
+                float: left;
+            }
+
+            #titulo { 
+                float: left;
+            }
+
+
+            #barra {
+                width: 1px;
+                height: 20px;
+                border: solid 1px #cccccc;
+                border-radius: 4px;
+                background-color: green;
+                color: #cccccc;
+                font-family: sans-serif;
+                font-size: 10px;
+                font-weight: bolder;
+                padding-top: 10px;
+                text-align: center;
+            }

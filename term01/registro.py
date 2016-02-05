@@ -4,12 +4,12 @@
 import time
 
 class Registrador:
-    def __init__(self, conf):
-        self.nombre_archivo = conf.archivo_registro
-        self.separador = conf.reg_separador
-        self.flg_fecha = conf.reg_fecha
-        self.flg_hora = conf.reg_hora
-        self.solo_cambios = conf.reg_solo_cambios
+    def __init__(self, archivo_registro, reg_separador, reg_fecha, reg_hora, reg_solo_cambios):
+        self.nombre_archivo = archivo_registro
+        self.separador = reg_separador
+        self.flg_fecha = reg_fecha
+        self.flg_hora = reg_hora
+        self.solo_cambios = reg_solo_cambios
         self.linea_anterior = ""
     
     def guardar_linea(self, datos):
