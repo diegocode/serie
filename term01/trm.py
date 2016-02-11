@@ -18,8 +18,8 @@ separador_c = ""
 separador_v = "_"
 lineaextra = False
 
-puerto = '/dev/ttyACM0'
-baudios = 57600
+puerto = '/dev/ttyACM1'
+baudios = 9600
 timout = 1
 bits_datos = serial.EIGHTBITS # FIVEBITS, SIXBITS, SEVENBITS, EIGHTBITS
 paridad = serial.PARITY_NONE #PARITY_NONE, PARITY_EVEN, PARITY_ODD PARITY_MARK, PARITY_SPACE
@@ -31,6 +31,15 @@ reg_fecha = "0"
 reg_hora = "1"
 reg_solo_cambios = "1"
 
+#destino_web_request = "http://localhost/clima/recibe.php"
+#destino_web_request = "http://www.diegocodevilla.com.ar/serie/clima/recibe.php"
+destino_web_request = ""
+
+valor_ini = 6
+valor_fin = 10
+
+solo_valor = "0"
+banda_muerta_valor = 0
 
 try:
     # se abre port serie     
@@ -69,7 +78,7 @@ while True:
     if ser.inWaiting():
         rec = ser.read() 
         mostrar = ""
-        
+            
         if "H" in formato:       
             hex = ("%02X") % (ord(rec))
             mostrar = mostrar + separador + hex
@@ -83,7 +92,9 @@ while True:
         
         mostrar = mostrar + separador_c
         
-        sys.stdout.write(mostrar)
+        if solo_valor == "0":
+            sys.stdout.write(mostrar)
+            
         linea = linea + mostrar 
          
         if "A" not in formato :
@@ -107,19 +118,16 @@ while True:
                if archivo_registro != "":
                     log.guardar_linea([linea,])
                     
-               datos = {'datos': linea}
-               #requests.get("http://localhost/clima/recibe.php", params=datos)
-               requests.get("http://www.diegocodevilla.com.ar/serie/clima/recibe.php", params=datos)
+               if solo_valor == "1":
+                    valor = linea[valor_ini:valor_fin]
+                    print valor
+
+               if destino_web_request!= "":
+                    datos = {'datos': linea}
+                    requests.get(destino_web_request, params=datos)
               
                linea = ""            
 
-        
-                
-        #f = open('clima.txt', 'a')        
-        #f.write(linea)   
-       
-        #linea = ""
-        #f.close() 
         
        
        
