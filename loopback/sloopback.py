@@ -13,7 +13,7 @@ PROGRAM_NAME = "serial loopback"
 VERSION = "0.3"
 COPYRIGHT_YEAR = 2015
 
-PACKAGE_URL = "<https://github.com/diegocode/serie/tree/master/loopback>"
+PACKAGE_URL = "https://github.com/diegocode/serie/tree/master/loopback"
 
 def print_help():
     """ Print help info. """
@@ -34,6 +34,7 @@ def print_help():
     print "  -m, --message=MESSAGE  string to use for testing"
     print "  -t, --timeout=FLOAT    max. timeout in seconds"
     print "  -l, --list             list available serial ports"
+    print "  -q, --quiet            print error messages only" 
     print ""
     
     print "  Ctrl + C - Exits"    
@@ -71,10 +72,11 @@ def main():
     # add arguments to parse 
     parser.add_argument("-h", "--help", action="store_true")
     parser.add_argument("-v", "--version", help="",action="store_true")    
-    parser.add_argument("-p", "--port", help="port to test")
-    parser.add_argument("-m", "--message", help="message for the test")
-    parser.add_argument("-t", "--timeout", help="timeout in seconds", type=float)
-    parser.add_argument("-l", "--list", help="lists available ports",action="store_true")
+    parser.add_argument("-p", "--port", help="")
+    parser.add_argument("-m", "--message", help="")
+    parser.add_argument("-t", "--timeout", help="", type=float)
+    parser.add_argument("-l", "--list", help="",action="store_true")
+    parser.add_argument("-q", "--quiet", help="",action="store_true")
     
     # parse arguments
     args = parser.parse_args()
@@ -124,6 +126,11 @@ def main():
         raise SystemExit
 
     num_err = 0
+    
+    print "testing port %s with message %s" % (pserie, msg)
+    print "Ctrl + C to exit"
+    if args.quiet:
+        print "- Printing only errors"
 
     while True:
         ser.write(msg)
@@ -133,7 +140,8 @@ def main():
             print "error ", num_err, rec
             
         else:
-            print rec
+            if not args.quiet:
+                print rec
 
 
 if __name__ == '__main__':
