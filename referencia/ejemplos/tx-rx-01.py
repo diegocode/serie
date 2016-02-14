@@ -14,13 +14,19 @@ ser = serial.Serial('/dev/ttyACM1',
 rec = ""
 linea = ""
 while True:
+    # solicita ingreso de cantidad desde teclado
     cant = raw_input("cuántos asteriscos? ")
-    ser.write( cant);
     
+    # envía por puerto serie el string ingresado
+    ser.write( cant);
+        
     while True:
+        # lee lo recibido por el puerto serie
         rec = ser.read()
+        
         linea = linea + rec
         if rec == '\n':        
+            # si es fin de línea, muéstra por pantalla
             print linea
             linea = ""
             break

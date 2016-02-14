@@ -14,6 +14,7 @@ import timer
 # TODO: archivo de configuración 
 # TODO: parámetros línea comando
 
+# configuración 
 formato = "A" # H - hexa / A - ascii / D - decimal
 separador_c = ""
 separador_v = " "
@@ -44,12 +45,18 @@ banda_muerta_valor = 0
 
 t_scan = 0.1
 
+
 def tim_func():
+    """ callback de timer """
     global linea
+    
     if ser.inWaiting():
+        # si hay bytes en buffer de recepción...
         rec = ser.read() 
         mostrar = ""
             
+        # mostrar = lo recibido en el formato configurado 
+        # dec y/o ASCII y/o hex 
         if "H" in formato:       
             hex = ("%02X") % (ord(rec))
             mostrar = mostrar + separador + hex
@@ -61,39 +68,58 @@ def tim_func():
             dec = ("%03d") % (ord(rec))
             mostrar = mostrar + separador + dec
         
+        # le agrega al final el separador de caracteres
         mostrar = mostrar + separador_c
-        
+                
         if solo_valor == "0":
+            # solo se desea mostrar todo lo recibido
             sys.stdout.write(mostrar)
             
+        # va formando la línea recibida
         linea = linea + mostrar 
          
         if "A" not in formato :
+            # si no se especificó formato ASCII...
             if rec == '\n':
+                # ...y se recibió fin de línea 
+                # deja una línea
                 print
+                # y agrega un caracter de fin de línea a "linea"
                 linea = linea + '\n'
+                                
                 if lineaextra:
+                    # si se desea agregar una línea extra... 
                     print
                     linea = linea + '\n'             
-                
+
                 if archivo_registro != "":
+                    # si se configuró archivo de registro 
+                    # guarda la línea
                     log.guardar_linea([linea,])
                     
                 linea = ""
         else:
+            # si alguno de los formato es ASCII 
             if rec == '\n':
+               # y se recibió fin de línea...
+               
                if lineaextra:
+                    # si se desea agregar una línea extra... 
                     print
-                    linea = linea + '\n'
-                
+                    linea = linea + '\n'              
+               
                if archivo_registro != "":
+                    # si se configuró archivo de registro 
+                    # guarda la línea                   
                     log.guardar_linea([linea,])
                     
                if solo_valor == "1":
+                    # si se desesa guardar / mostrar solo una parte de la línea...
                     valor = linea[valor_ini:valor_fin]
                     print valor
 
                if destino_web_request!= "":
+                    # si se configuró destino de request...
                     datos = {'datos': linea}
                     requests.get(destino_web_request, params=datos)
               
@@ -112,6 +138,8 @@ except serial.serialutil.SerialException, mensaje:
     print "No se puede continuar con la ejecución"
     raise SystemExit
 
+# si se configuró archivo de registro
+# crea instancia de Registrador
 if archivo_registro != "":
     log = registro.Registrador(archivo_registro,
                                reg_separador,
@@ -121,13 +149,13 @@ if archivo_registro != "":
                                )
 else:
     log = None
-    log=None
-    
+
+# determina separador entre caracteres
+# si se especificó más de un formato
+# de visualización
 if len(formato) > 1:
-    #print len(formato)
     separador = separador_v
 else:
-    #print len(formato)
     separador = ""
 
 linea = ""
@@ -139,9 +167,11 @@ tim.start()
 def kbd_send():
     while True:
         while True:
+            # ingreso de string por teclado
             cmd = ""
             cmd = raw_input("").lower()
             
+            # envía el string ingresado
             ser.write(cmd) 
         
          

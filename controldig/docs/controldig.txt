@@ -1,25 +1,28 @@
 control digital 
 usando lineas de handshaking del port serie
 =======================================================================
-v.0.3 (alfa)
+v.0.4 (beta)
 =======================================================================
 
 requiere pyserial 3.0.1+
 
-Testeado (-)/ a testear (?) en:
+
+=======================================================================
+Testeado en:
+=======================================================================
 
 ASus K53E i3* con:
- - mint 17.2 kde 
+ - mint 17.1 kde 
  - win 7 Home - 64b
 
 Netbook LG110* atom N270 con:
- ? win xp 32b home
+ - win xp 32b home
 
 Netbook Asus1005HA* atom N270 con:
- ? debian 8.2 32b
+ - debian 8.2 32b
 
 Sempron 2200+ Mother M7VIG400 (serie on board y *) con:
- ? win xp pro 32b
+ - win xp pro 32b
 
 *con adaptador usb-232 HXSP-2108D (con CI CP2108)
 
@@ -57,6 +60,9 @@ usarlo desde linux.
 =======================================================================
 historial de versiones
 =======================================================================
+
+0.4 - 2016-02-13 -
+    Agregado: GUI 
 
 0.3 - 2016-01-30 -
     Agregado: 
@@ -131,25 +137,3 @@ registro_separador= caracter utilizado para separar los campos del archivo
                     de registro de eventos
 
 
------------------------------------------------------------------------
-TODO:
-
-Se le pueden pasar como parámetros:
-
-tscan=s.s - tiempo de scan - cada cuántos segundos actualiza el estado
-	de las e/s
-
-quiet - no muestra estado por pantalla cuando está en modo automático
-
-port=nombre - nombre del port serie a utilizar
-
-dtr=1 o sd 
-dtr=0 o rd
-rts=1 o sr
-rts=0 o rr - estado inicial de las salidas rts y dtr
-
-fs=<nombre de archivo de script> - script para modo automático
-
-fl=<nombre de archivo de log> 
-
-config=<nombre archivo configuración>

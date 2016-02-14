@@ -7,12 +7,10 @@ import serial.tools.list_ports
 import sys
 import argparse
 
-# Names, version, year, URLs used in help and version
+# constantes utilizadas en help y versión
 PROGRAM_NAME = "serial loopback"
-
-VERSION = "0.3"
-COPYRIGHT_YEAR = 2015
-
+VERSION = "0.4"
+COPYRIGHT_YEAR = 2016
 PACKAGE_URL = "https://github.com/diegocode/serie/tree/master/loopback"
 
 def print_help():
@@ -39,8 +37,7 @@ def print_help():
     
     print "  Ctrl + C - Exits"    
     print ""
-    print ( "%s home page: <%s>" ) % (PROGRAM_NAME, PACKAGE_URL);
-    
+    print ( "%s home page: <%s>" ) % (PROGRAM_NAME, PACKAGE_URL);   
     
     
 def print_version():
@@ -59,6 +56,7 @@ This is free software: you are free to change and redistribute it.
 There is NO WARRANTY, to the extent permitted by law.\n""") % COPYRIGHT_YEAR
 
 def list_ports():
+    """ print list of available ports """
     print ""
     print "Available serial ports:"
     for p in  serial.tools.list_ports.comports():
@@ -66,7 +64,7 @@ def list_ports():
 
 
 def main():
-        # create argparse object - set automatic help to false
+    # create argparse object - set automatic help to false
     parser = argparse.ArgumentParser(add_help=False)
     
     # add arguments to parse 
@@ -109,12 +107,15 @@ def main():
             tout = args.timeout
         else:
             tout = 1
-           
+        
+        #if --port / -p ...   
         if args.port:
             pserie = args.port
         else:
             pserie = '/dev/ttyUSB0'
-            
+
+    # try to open port
+    # if not possible lists available ports
     try:
         ser = serial.Serial(pserie, timeout=tout)
     except serial.serialutil.SerialException, mensaje:
@@ -125,6 +126,7 @@ def main():
         
         raise SystemExit
 
+    
     num_err = 0
     
     print "testing port %s with message %s" % (pserie, msg)
@@ -133,13 +135,20 @@ def main():
         print "- Printing only errors"
 
     while True:
+        # send message 
         ser.write(msg)
+        
+        # waits to receive as many bytes as sended
+        # or continue if timeout
         rec = ser.read( len(msg) ) 
-        if ( rec != msg ):          # read one byte
+                
+        if ( rec != msg ):          
+            # if messages don match print error
             num_err = num_err + 1
             print "error ", num_err, rec
             
         else:
+            # if messages match and not quiet prints received message
             if not args.quiet:
                 print rec
 

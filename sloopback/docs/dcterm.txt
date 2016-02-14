@@ -1,0 +1,46 @@
+sloopback
+programa de diagnóstico
+=======================================================================
+v.0.3 (beta)
+=======================================================================
+
+requiere pyserial 3.0.1+
+
+
+=======================================================================
+Testeado en:
+=======================================================================
+
+ASus K53E i3* con:
+ - mint 17.1 kde 
+ - win 7 Home - 64b
+
+Netbook LG110* atom N270 con:
+ - win xp 32b home
+
+Netbook Asus1005HA* atom N270 con:
+ - debian 8.2 32b
+
+Sempron 2200+ Mother M7VIG400 (serie on board y *) con:
+ - win xp pro 32b
+
+*con adaptador usb-232 HXSP-2108D (con CI CP2108)
+
+=======================================================================
+uso:
+=======================================================================
+
+Se inicia desde línea de comandos y se pueden utilizar 
+los siguientes parámetros:
+
+  -h, --help                ayuda
+  -v, --version             información de versión 
+  -p, --port=PORT           puerto 
+  -m, --message=MESSAGE     mensaje a utilizar, si no se especifica 
+                            se utiliza la letra D
+  -t, --timeout=FLOAT       timeout de recepción en segundos
+  -l, --list                lista de puertos disponibles
+  -q, --quiet               solo muestra si hay errores
+
+  Ctrl + C                  sale del programa
+

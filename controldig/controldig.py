@@ -45,6 +45,8 @@ def get_fmt_out_status(n):
     return "DTR-> " + is_set(n, 0x02) + " RTS-> " + is_set(n, 0x01)
 
 def get_fmt_status(p):
+    """devuelve un string con el estado de las entradas y salidas """
+    
     # obtiene estado de entradas y salidas
     entradas = get_inp_status(p)
     salidas = get_out_status(p)
@@ -52,11 +54,13 @@ def get_fmt_status(p):
     return  get_fmt_inp_status(entradas) + "   " + get_fmt_out_status(salidas)
      
 def reemplazar_nombres(s, nombres): 
+    """asigna los nombres descriptivos a las patas"""
     for n in nombres:
         s = s.replace(n, nombres[n])
     return s 
  
 def carga_estados(lista, nombrearchivo):
+    """carga estados definidos en el archivo de script"""
     f = open(nombrearchivo, 'r')
     for line in f:
         linea = "".join(line.split())
@@ -72,7 +76,7 @@ def carga_estados(lista, nombrearchivo):
     f.close()
 
 def timeout_scan( s, estados, c, log ):    
-    """se ejecuta cada t_scan"""
+    """callback del timer - se ejecuta cada t_scan"""
     global estado_actual
     
     ent = get_inp_status(s)
@@ -82,6 +86,8 @@ def timeout_scan( s, estados, c, log ):
     
     #print estado_actual, e, entradas_str, estados[estado_actual].transiciones
     
+    # cambia de estado las salidas si corresponde 
+    # segun el estado de las entradas 
     if (e != estado_actual) and (e != -1):
         estado_actual = e
         s.rts = estados[e].rts
@@ -90,6 +96,8 @@ def timeout_scan( s, estados, c, log ):
     datos = str(estado_actual) + " - " + reemplazar_nombres(get_fmt_status(s), c.nombres) 
     print datos
     
+    # si se configuró nombre de archivo de registro
+    # guarda línea en el log
     if c.archivo_registro != "":
         log.guardar_linea([datos,])
 
@@ -99,13 +107,16 @@ def main():
     
     estados = {}  
     
+    # instancia de Configuracion 
     c = configuracion.Configuracion("controldig.cfg")
+    # carga confiiguración del archivo especificado
     c.cargar_configuracion()  
    
     try:
         #crea instancia de Serial y abre puerto
         ser = serial.Serial(c.puerto, timeout=1) 
     except serial.serialutil.SerialException, mensaje:
+        # si no se puede abrir el puerto, termina la aplicación
         print mensaje
         print "No se puede continuar con la ejecución"
         raise SystemExit
@@ -123,6 +134,8 @@ def main():
         print "no se especificó un estado inicial"
         estado_actual = 0
         
+    # si se especificá archivo de registro
+    # crea una instancia de Registrador
     if c.archivo_registro != "":
         log = registro.Registrador(c)
     else:
@@ -133,6 +146,7 @@ def main():
     tim.start()
 
     while True:
+        # lee comando de teclado
         cmd = ""
         cmd = raw_input().lower()
 

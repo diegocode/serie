@@ -1,0 +1,50 @@
+dcterm 
+programa terminal 
+=======================================================================
+v.0.2 (alfa)
+=======================================================================
+
+requiere pyserial 3.0.1+
+
+
+=======================================================================
+Testeado en:
+=======================================================================
+
+Asus K53E i3* con:
+ - mint 17.1 kde 
+ - win 7 Home - 64b
+
+Netbook LG110* atom N270 con:
+ - win xp 32b home
+
+*con adaptador usb-232 HXSP-2108D (con CI CP2108)
+
+=======================================================================
+configuración: HARDCODED a esta versión
+=======================================================================
+
+formato = H                 hexa / A - ascii / D - decimal
+separador_c                 separador entre caracteres
+separador_v                 separador entre valores
+lineaextra                  línea en blanco extra 
+
+puerto                      puerto
+baudios                     velocidad en bauds
+timout                      timeout en segundos
+bits_datos                  5, 6, 7, 8
+paridad                     ninguna, par, impar, mark, space
+bits_stop                   1, 1.5, 2
+
+archivo_registro            archivo de registro
+reg_separador               separador de valores para línea de archivo
+reg_hora / reg_fecha        agrega hora y/o fecha 
+reg_solo_cambios            guarda en registro solo si hay cambios
+
+destino_web_request         destino de request web
+
+solo_valor                  si se desea mostrar o guardar una parte
+                            de la línea recibida
+valor_ini, valor_fin        índice de inicio y fin de la sección
+                            del string a mostrar
+

@@ -1,6 +1,12 @@
 #!/usr/bin/
 # -*- coding: utf-8 -*-
 
+# envía un byte cada 100 ms 
+# el byte comienza en cero 
+# y se incrementa en 1 hasta 255
+
+# funciona con el ejemplo Dimmer de Arduino
+
 import serial
 import sys
 import time
@@ -15,13 +21,18 @@ ser = serial.Serial('/dev/ttyACM0',
 
 brillo = 0
 while True:
+    # envía el valor brillo
     ser.write([brillo,])
     
+    # si brillo es menor a 255
+    # le suma uno.
+    # si es 255 brillo = 0
     if brillo < 255:
         brillo = brillo + 1
     else:
         brillo = 0
-        
-    time.sleep(0.05)
+
+    # hace un retardo (bloqueante) de 100 ms aprox.
+    time.sleep(0.1)
 
     
