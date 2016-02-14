@@ -1,5 +1,5 @@
-#!/usr/bin/
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python
+# -*- coding: UTF-8 -*-
 
 # monitorea y fija estados  de las líneas de handshaking del puerto serie
 # en forma manual o de acuerdo a un script
@@ -99,7 +99,7 @@ def main():
     
     estados = {}  
     
-    c = configuracion.Configuracion("prueba.cfg")
+    c = configuracion.Configuracion("controldig.cfg")
     c.cargar_configuracion()  
    
     try:

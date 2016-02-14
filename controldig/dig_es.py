@@ -284,7 +284,7 @@ def inicio():
     
     estados = {}  
     
-    controldig.c = configuracion.Configuracion("prueba.cfg")
+    controldig.c = configuracion.Configuracion("controldig.cfg")
     controldig.c.cargar_configuracion()  
    
     try:

@@ -1,5 +1,5 @@
-#!/usr/bin/
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python
+# -*- coding: UTF-8 -*-
 
 import serial
 import serial.tools.list_ports
