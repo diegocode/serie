@@ -1,1 +1,21 @@
-Un conjunto de recursos 
+Recursos para la utilización del puerto serie 
+en entornos GNU/Linux
+
+Conjunto de recursos para aprendizaje y trabajo con el puerto serie
+
+- Material de referencia (Hardware, y software en Python + PySerial)
+
+- Ejemplos (Python, Qt y C++)
+
+- Aplicaciones:
+  
+  sloopback - para diagnóstico
+  
+  dcterm - terminal con capacidad de registrador y de enviar datos 
+  
+  controldig - control y monitoreo digital usando las líneas de handshaking 
+               pensado para su utilización por personas sin conocimientos 
+               de programación. 
+               
+  dig_es: GUI de controldig
+               
