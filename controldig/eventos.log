@@ -1,2 +1,8 @@
-2016-02-13;2 - DCD-> 1 RI-> 1 DSR-> 1 CTS-> 0   DTR-> 0 RTS-> 1
-2016-02-13;2 - DCD-> 0 RI-> 0 DSR-> 0 CTS-> 0   DTR-> 0 RTS-> 1
+2016-02-15;2 - DCD-> 0 RI-> 0 DSR-> 0 CTS-> 0   DTR-> 0 RTS-> 1
+2016-02-15;2 - DCD-> 0 RI-> 0 DSR-> 0 CTS-> 0   DTR-> 0 RTS-> 0
+2016-02-15;2 - DCD-> 0 RI-> 0 DSR-> 0 CTS-> 0   DTR-> 0 RTS-> 1
+2016-02-15;2 - DCD-> 0 RI-> 0 DSR-> 0 CTS-> 0   DTR-> 1 RTS-> 1
+2016-02-15;2 - DCD-> 0 RI-> 0 DSR-> 0 CTS-> 0   DTR-> 1 RTS-> 0
+2016-02-15;2 - DCD-> 0 RI-> 0 DSR-> 0 CTS-> 0   DTR-> 0 RTS-> 0
+2016-02-15;2 - DCD-> 0 RI-> 0 DSR-> 0 CTS-> 0   DTR-> 0 RTS-> 1
+2016-02-15;2 - DCD-> 0 RI-> 0 DSR-> 0 CTS-> 0   DTR-> 1 RTS-> 1

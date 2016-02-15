@@ -1,7 +1,22 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-# terminal 
+""" 
+   dcterminal.py - terminal serie 
+   
+   Copyright 2016 - Diego Codevilla - <dcodevilla@pioix.edu.ar>
+   
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+   You should have received a copy of the GNU General Public License
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.  
+"""
 
 import serial
 import time
@@ -20,7 +35,7 @@ separador_c = ""
 separador_v = " "
 lineaextra = False
 
-puerto = '/dev/ttyACM0'
+puerto = '/dev/ttyUSB0'
 baudios = 57600
 timout = 1
 bits_datos = serial.EIGHTBITS # FIVEBITS, SIXBITS, SEVENBITS, EIGHTBITS
@@ -34,8 +49,7 @@ reg_hora = "1"
 reg_solo_cambios = "1"
 
 #destino_web_request = "http://localhost/clima/recibe.php"
-destino_web_request = "http://www.diegocodevilla.com.ar/serie/clima/recibe.php"
-#destino_web_request = ""
+destino_web_request = ""
 
 valor_ini = 6
 valor_fin = 10
@@ -43,7 +57,7 @@ valor_fin = 10
 solo_valor = "0"
 banda_muerta_valor = 0
 
-t_scan = 0.1
+t_scan = 0.2
 
 
 def tim_func():

@@ -1,13 +1,8 @@
-#!/usr/bin/
-# -*- coding: utf-8 -*-
+/*
+   adc-preset-serie.ino -  
 
-""" 
-   hndsh-02.py 
-   
-   fija tensión positiva y negativa alternativamente 
-   cada 500 ms en la pata RTS si CD presenta +V sino RTS queda fija
-   Si RI presenta +V sale del programa
-
+    envia por puerto serie el valor de conversion 
+    de un ADC - pata AI 0
    
    Copyright 2016 - Diego Codevilla - <dcodevilla@pioix.edu.ar>
    
@@ -21,25 +16,16 @@
    GNU General Public License for more details.
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.  
-"""
+*/
 
-import serial
-import time
+void setup() {
+  // initialize the serial communication:
+  Serial.begin(9600);
+}
 
-# abre el puerto
-s = serial.Serial("/dev/ttyUSB1")
+void loop() {
+  // send the value of analog input 0:
+  Serial.println(analogRead(0));
 
-# estado inicial de RTS (-V)
-s.rts = 0
-while True:
-    # si CD tiene +V...
-    if s.cd:
-        # invierte el estado de RTS
-        s.rts = not s.rts
-
-    # demora de 500ms
-    time.sleep(0.5)
-
-    # si RI tiene +V sale del while
-    if s.ri:
-        break
+  delay(2000);
+}
