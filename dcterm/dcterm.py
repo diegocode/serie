@@ -4,6 +4,9 @@
 """ 
    dcterminal.py - terminal serie 
    
+   version 0.3
+   2016.02.19
+   
    Copyright 2016 - Diego Codevilla - <dcodevilla@pioix.edu.ar>
    
    This program is free software: you can redistribute it and/or modify
@@ -33,10 +36,10 @@ import timer
 formato = "A" # H - hexa / A - ascii / D - decimal
 separador_c = ""
 separador_v = " "
-lineaextra = False
+lineaextra = "0"
 
-puerto = '/dev/ttyUSB0'
-baudios = 57600
+puerto = '/dev/ttyACM0'
+baudios = 115200
 timout = 1
 bits_datos = serial.EIGHTBITS # FIVEBITS, SIXBITS, SEVENBITS, EIGHTBITS
 paridad = serial.PARITY_NONE #PARITY_NONE, PARITY_EVEN, PARITY_ODD PARITY_MARK, PARITY_SPACE
@@ -51,147 +54,154 @@ reg_solo_cambios = "1"
 #destino_web_request = "http://localhost/clima/recibe.php"
 destino_web_request = ""
 
-valor_ini = 6
-valor_fin = 10
-
 solo_valor = "0"
+valor_ini = 0
+valor_fin = 5
+
 banda_muerta_valor = 0
 
 t_scan = 0.2
 
+buffer = ""
+linea = ""
 
-def tim_func():
+fin = 0
+
+def tim_func( ser, log, separador ):
     """ callback de timer """
-    global linea
+    global linea, fin
     
-    if ser.inWaiting():
+    cant = ser.in_waiting
+    if cant > 0:        
         # si hay bytes en buffer de recepción...
-        rec = ser.read() 
+        buff = ser.read(cant) 
         mostrar = ""
             
-        # mostrar = lo recibido en el formato configurado 
-        # dec y/o ASCII y/o hex 
-        if "H" in formato:       
-            hex = ("%02X") % (ord(rec))
-            mostrar = mostrar + separador + hex
+        i = 0
+        hay = 0
+        mostrar = ""
         
-        if "A" in formato:
-            mostrar = mostrar + separador + rec
+        while i < len(buff):
+            rec = buff[i]
+            # mostrar = lo recibido en el formato configurado 
+            # dec y/o ASCII y/o hex 
+            if "H" in formato:       
+                # si en formato hay H agrega car recibido en hexa
+                hex = ("%02X") % (ord(rec))            
+                mostrar = hex            
+                hay = 1
 
-        if "D" in formato:
-            dec = ("%03d") % (ord(rec))
-            mostrar = mostrar + separador + dec
-        
-        # le agrega al final el separador de caracteres
-        mostrar = mostrar + separador_c
-                
-        if solo_valor == "0":
-            # solo se desea mostrar todo lo recibido
-            sys.stdout.write(mostrar)
+            if "D" in formato:
+                # si en formato hay D agrega car recibido en dec
+                dec = ("%03d") % (ord(rec))
+                if hay == 1:
+                    # si hay caaracteres previos, agrega separador
+                    mostrar = mostrar + separador
+                    
+                mostrar = mostrar + dec
+
             
-        # va formando la línea recibida
-        linea = linea + mostrar 
-         
-        if "A" not in formato :
-            # si no se especificó formato ASCII...
+            if "A" in formato:
+                # si en formato hay A agrega car recibido en ASCII
+                if hay == 1:
+                    # si hay caaracteres previos, agrega separador
+                    mostrar = mostrar + separador
+                    
+                mostrar = mostrar + separador + rec
+                
+                if hay == 1:
+                    mostrar = mostrar + separador_v
+                 
+            # si se recibió fin de linea marca fin
             if rec == '\n':
-                # ...y se recibió fin de línea 
-                # deja una línea
-                print
-                # y agrega un caracter de fin de línea a "linea"
-                linea = linea + '\n'
-                                
-                if lineaextra:
-                    # si se desea agregar una línea extra... 
-                    print
-                    linea = linea + '\n'             
+                fin = 1   
+                # y si no es ascii agrega fin de línea...
+                if "A" not in formato:                                 
+                    mostrar = mostrar + '\n'
+            
+            # agrega lo recibido (caracter+separadores... a línea)
+            linea = linea + mostrar
+            
+            if fin == 1:                
+                # si se recibió fin de línea realiza las acciones de línea (que correspondan):
+                # separa solo valor 
+                if solo_valor == "1":
+                    # si se desesa guardar / mostrar solo una parte de la línea...
+                    valor = linea[valor_ini:valor_fin]
+                    linea = valor + '\n'
 
+                # deja una línea extra
+                if lineaextra == "1":
+                    # si se desea agregar una línea extra... 
+                    linea = linea + '\n'             
+                    mostrar = mostrar + '\n'
+                    
+                # guarda la línea en archivo de registro
                 if archivo_registro != "":
                     # si se configuró archivo de registro 
                     # guarda la línea
-                    log.guardar_linea([linea,])
-                    
-                linea = ""
-        else:
-            # si alguno de los formato es ASCII 
-            if rec == '\n':
-               # y se recibió fin de línea...
-               
-               if lineaextra:
-                    # si se desea agregar una línea extra... 
-                    print
-                    linea = linea + '\n'              
-               
-               if archivo_registro != "":
-                    # si se configuró archivo de registro 
-                    # guarda la línea                   
-                    log.guardar_linea([linea,])
-                    
-               if solo_valor == "1":
-                    # si se desesa guardar / mostrar solo una parte de la línea...
-                    valor = linea[valor_ini:valor_fin]
-                    print valor
+                    log.guardar_linea([linea,])                                                           
 
-               if destino_web_request!= "":
+                # envía datos a web
+                if destino_web_request!= "":
                     # si se configuró destino de request...
-                    datos = {'datos': linea}
+                    datos = {'datos': linea}                    
                     requests.get(destino_web_request, params=datos)
-              
-               linea = ""         
-
-try:
-    # se abre port serie     
-    ser = serial.Serial(puerto, 
-                    baudrate=baudios,
-                    timeout=timout, 
-                    bytesize=bits_datos, 
-                    parity=paridad, 
-                    stopbits = bits_stop)
-except serial.serialutil.SerialException, mensaje:
-    print mensaje
-    print "No se puede continuar con la ejecución"
-    raise SystemExit
-
-# si se configuró archivo de registro
-# crea instancia de Registrador
-if archivo_registro != "":
-    log = registro.Registrador(archivo_registro,
-                               reg_separador,
-                               reg_fecha,
-                               reg_hora,
-                               reg_solo_cambios
-                               )
-else:
-    log = None
-
-# determina separador entre caracteres
-# si se especificó más de un formato
-# de visualización
-if len(formato) > 1:
-    separador = separador_v
-else:
-    separador = ""
-
-linea = ""
-cmd = ""
-
-tim = timer.tick_timer(t_scan, tim_func, [])
-tim.start()
-
-def kbd_send():
-    while True:
-        while True:
-            # ingreso de string por teclado
-            cmd = ""
-            cmd = raw_input("").lower()
+                
+                linea = ""         
+                fin = 0
             
-            # envía el string ingresado
-            ser.write(cmd) 
+            sys.stdout.write(mostrar)
+            sys.stdout.flush()
+            
+            mostrar = ""
+            i = i + 1
+
+def mainLoop():    
+    try:
+        # se abre port serie     
+        ser = serial.Serial(puerto, 
+                        baudrate=baudios,
+                        timeout=timout, 
+                        bytesize=bits_datos, 
+                        parity=paridad, 
+                        stopbits = bits_stop)
+    except serial.serialutil.SerialException, mensaje:
+        print mensaje
+        print "No se puede continuar con la ejecución"
+        raise SystemExit
+
+    # si se configuró archivo de registro
+    # crea instancia de Registrador
+    if archivo_registro != "":
+        log = registro.Registrador(archivo_registro,
+                                reg_separador,
+                                reg_fecha,
+                                reg_hora,
+                                reg_solo_cambios
+                                )
+    else:
+        log = None
+
+    separador = separador_c
+
+    linea = ""
+    cmd = ""
+
+    tim = timer.tick_timer(t_scan, tim_func, [ser,log,separador])
+    tim.start()
+
+    while True:
+        # ingreso de string por teclado
+        cmd = ""
+        cmd = raw_input("").lower()
         
+        # envía el string ingresado
+        ser.write(cmd)           
          
 if __name__ == '__main__':
     try:
-        kbd_send()
+        mainLoop()
     except KeyboardInterrupt:
         print "deteniendo aplicación..."
         pass
