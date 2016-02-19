@@ -52,7 +52,8 @@ reg_hora = "1"
 reg_solo_cambios = "1"
 
 #destino_web_request = "http://localhost/clima/recibe.php"
-destino_web_request = ""
+destino_web_request = "http://www.diegocodevilla.com.ar/serie/clima/recibe.php"
+#destino_web_request = ""
 
 solo_valor = "0"
 valor_ini = 0
