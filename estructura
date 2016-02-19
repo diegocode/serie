@@ -1,0 +1,20 @@
+.
+├── controldig
+│   ├── docs
+│   └── hardware
+├── dcterm
+│   └── docs
+├── referencia
+│   ├── ejemplos
+│   │   └── clima
+│   │       └── arduino
+│   └── Qt + Cpp
+├── serie-web
+│   ├── clima
+│   ├── files
+│   ├── img
+│   └── video
+└── sloopback
+    └── docs
+
+17 directories

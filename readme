@@ -13,9 +13,32 @@ Conjunto de recursos para aprendizaje y trabajo con el puerto serie
   
   dcterm - terminal con capacidad de registrador y de enviar datos 
   
-  controldig - control y monitoreo digital usando las líneas de handshaking 
-               pensado para su utilización por personas sin conocimientos 
-               de programación. 
+  controldig - control y monitoreo digital usando las líneas de 
+               handshaking pensado para su utilización por personas 
+               sin conocimientos de programación. 
                
   dig_es: GUI de controldig
-               
+
+-----------------------------------------------------------------------
+estructura del respoositorio
+-----------------------------------------------------------------------
+.
+├── controldig
+│   ├── docs
+│   └── hardware
+├── dcterm
+│   └── docs
+├── referencia
+│   ├── ejemplos
+│   │   └── clima
+│   │       └── arduino
+│   └── Qt + Cpp
+├── serie-web
+│   ├── clima
+│   ├── files
+│   ├── img
+│   └── video
+└── sloopback
+    └── docs
+
+17 directories
