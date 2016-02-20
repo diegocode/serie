@@ -146,8 +146,11 @@ def tim_func( ser, log, separador ):
                 # envía datos a web
                 if destino_web_request!= "":
                     # si se configuró destino de request...
-                    datos = {'datos': linea}                    
-                    requests.get(destino_web_request, params=datos)
+                    datos = {'datos': linea}
+                    try:                    
+                        requests.get(destino_web_request, params=datos)
+                    except requests.exceptions.ConnectionError:
+                        print "error de conexión"
                 
                 linea = ""         
                 fin = 0
